@@ -26,3 +26,4 @@ struct SteamDRM
 };
 
 void InitializeIPC(SteamIPC &IPC);
+void InitializeDRM(SteamDRM &DRM, char *Bufferpointer);

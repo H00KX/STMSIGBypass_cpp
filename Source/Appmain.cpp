@@ -28,6 +28,8 @@ extern "C"
             InitializeIPC(IPC);
             WaitForSingleObject(IPC.Consumesemaphore, 300000);
 
+            // Initialze the DRM struct from the data.
+            InitializeDRM(DRM, (char *)IPC.Sharedfilemapping);
 
         };
 
