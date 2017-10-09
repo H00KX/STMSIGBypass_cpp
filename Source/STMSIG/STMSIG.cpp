@@ -48,3 +48,34 @@ void InitializeDRM(SteamDRM &DRM, char *Bufferpointer)
     // Copy the termination event-name.
     DRM.Termevent = Bufferpointer;
 }
+
+// Read the steamstart file from disk. (Because why use the IPC for that..)
+void InitializeSteamstart(SteamStart &Start, const char *Filepath)
+{
+    uint32_t Buffersize;
+    auto Filebuffer = Readfile(Filepath);
+    auto Filepointer = Filebuffer.data();
+
+    // Read the GUID.
+    Buffersize = *(uint32_t *)Filepointer; Filepointer += sizeof(uint32_t);
+    Start.GUID = { Filepointer, Buffersize }; Filepointer += Buffersize;
+
+    // Read the Split GUID.
+    Buffersize = *(uint32_t *)Filepointer; Filepointer += sizeof(uint32_t);
+    Start.SplitGUID = { Filepointer, Buffersize }; Filepointer += Buffersize;
+
+    // Read the instance ID.
+    Buffersize = *(uint32_t *)Filepointer; Filepointer += sizeof(uint32_t);
+    Start.Instance = { Filepointer, Buffersize }; Filepointer += Buffersize;
+
+    // Read the modulename.
+    Buffersize = *(uint32_t *)Filepointer; Filepointer += sizeof(uint32_t);
+    Start.Modulename = { Filepointer, Buffersize }; Filepointer += Buffersize;
+
+    // Read the full path.
+    Buffersize = *(uint32_t *)Filepointer; Filepointer += sizeof(uint32_t);
+    Start.Fullpath = { Filepointer, Buffersize }; Filepointer += Buffersize;
+
+    // Read the unknown var even though it's likely just an EOF token.
+    Start.Unknown = *(uint32_t *)Filepointer;
+}
