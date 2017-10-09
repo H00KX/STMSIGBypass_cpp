@@ -33,8 +33,8 @@ void InitializeDRM(SteamDRM &DRM, char *Bufferpointer)
     DRM.ProcessID = *(uint32_t *)Bufferpointer;
     Bufferpointer += sizeof(uint32_t);
 
-    // Copy the unknown ID.
-    DRM.Unknown = *(uint32_t *)Bufferpointer;
+    // Copy the process status.
+    DRM.Activeprocess = *(uint32_t *)Bufferpointer;
     Bufferpointer += sizeof(uint32_t);
 
     // Copy the startup module-name.
