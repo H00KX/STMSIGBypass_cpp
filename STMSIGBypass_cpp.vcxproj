@@ -151,6 +151,7 @@
     <ClInclude Include="Source\Configuration\Macros.h" />
     <ClInclude Include="Source\Configuration\Warnings.h" />
     <ClInclude Include="Source\Stdinclude.h" />
+    <ClInclude Include="Source\STMSIG\STMSIG.h" />
     <ClInclude Include="Source\Utility\Binary\Hooking.h" />
     <ClInclude Include="Source\Utility\Binary\Memprotect.h" />
     <ClInclude Include="Source\Utility\Binary\Patternscan.h" />
@@ -163,10 +164,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Appmain.cpp" />
+    <ClCompile Include="Source\STMSIG\STMSIG.cpp" />
     <ClCompile Include="Source\Utility\Binary\Hooking.cpp" />
     <ClCompile Include="Source\Utility\Binary\Memprotect.cpp" />
     <ClCompile Include="Source\Utility\Binary\Patternscan.cpp" />
     <ClCompile Include="Source\Utility\Data\Bytebuffer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="STMSIGBypass_cpp.licenseheader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
