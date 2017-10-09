@@ -27,13 +27,30 @@ extern "C"
 
             // Initialize the IPC and wait for data.
             InitializeIPC(IPC);
-            WaitForSingleObject(IPC.Consumesemaphore, 300000);
+            WaitForSingleObject(IPC.Consumesemaphore, 1500);
 
             // Initialze the DRM struct from the data.
             InitializeDRM(DRM, (char *)IPC.Sharedfilemapping);
 
-            // Read the startup file.
+            // Read the startup file, even though steam just copies this to a "./STF" temp-file.
             InitializeSteamstart(Start, DRM.Startupmodule.c_str());
+
+            // Remove the startupfile.
+            std::remove(DRM.Startupmodule.c_str());
+
+            // Acknowledge that the game has started.
+            auto Event = OpenEventA(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, DRM.Startevent.c_str());
+            SetEvent(Event);
+            CloseHandle(Event);
+
+            // Notify the game that we are done.
+            ReleaseSemaphore(IPC.Producesemaphore, 1, NULL);
+
+            // Clean up the IPC.
+            UnmapViewOfFile(IPC.Sharedfilemapping);
+            CloseHandle(IPC.Sharedfilehandle);
+            CloseHandle(IPC.Consumesemaphore);
+            CloseHandle(IPC.Producesemaphore);
         };
 
         // Start the thread.

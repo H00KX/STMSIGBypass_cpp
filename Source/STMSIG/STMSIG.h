@@ -19,7 +19,7 @@ struct SteamIPC
 struct SteamDRM
 {
     uint32_t ProcessID;
-    uint32_t Unknown;
+    uint32_t Activeprocess;
     std::string Startupmodule;
     std::string Startevent;
     std::string Termevent;
