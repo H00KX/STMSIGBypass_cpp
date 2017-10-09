@@ -23,6 +23,7 @@ extern "C"
         {
             SteamIPC IPC{};
             SteamDRM DRM{};
+            SteamStart Start{};
 
             // Initialize the IPC and wait for data.
             InitializeIPC(IPC);
@@ -31,6 +32,8 @@ extern "C"
             // Initialze the DRM struct from the data.
             InitializeDRM(DRM, (char *)IPC.Sharedfilemapping);
 
+            // Read the startup file.
+            InitializeSteamstart(Start, DRM.Startupmodule.c_str());
         };
 
         // Start the thread.

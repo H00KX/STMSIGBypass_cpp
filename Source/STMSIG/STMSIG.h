@@ -24,6 +24,21 @@ struct SteamDRM
     std::string Startevent;
     std::string Termevent;
 };
+struct SteamStart
+{
+    std::string GUID;
+    std::string SplitGUID;
+    std::string Instance;
+    std::string Modulename;
+    std::string Fullpath;
+    uint32_t Unknown;
+
+    /*
+        Raw STARTUPINFOW struct and all the strings in it.
+        Not going to bother with it.
+    */
+};
 
 void InitializeIPC(SteamIPC &IPC);
 void InitializeDRM(SteamDRM &DRM, char *Bufferpointer);
+void InitializeSteamstart(SteamStart &Start, const char *Filepath);
