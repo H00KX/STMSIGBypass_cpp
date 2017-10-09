@@ -39,13 +39,12 @@ void InitializeDRM(SteamDRM &DRM, char *Bufferpointer)
 
     // Copy the startup module-name.
     DRM.Startupmodule = Bufferpointer;
-    Bufferpointer += DRM.Startupmodule.length();
+    Bufferpointer += DRM.Startupmodule.length() + 1;
 
     // Copy the startup event-name.
     DRM.Startevent = Bufferpointer;
-    Bufferpointer += DRM.Startevent.length();
+    Bufferpointer += DRM.Startevent.length() + 1;
 
     // Copy the termination event-name.
     DRM.Termevent = Bufferpointer;
-    Bufferpointer += DRM.Termevent.length();
 }
