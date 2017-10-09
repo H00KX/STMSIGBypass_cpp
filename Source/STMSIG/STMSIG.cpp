@@ -8,6 +8,7 @@
 
 #include "../Stdinclude.h"
 
+// Setup the IPC.
 void InitializeIPC(SteamIPC &IPC)
 {
     SECURITY_DESCRIPTOR pSecurityDescriptor;
@@ -25,3 +26,26 @@ void InitializeIPC(SteamIPC &IPC)
     IPC.Sharedfilemapping = MapViewOfFile(IPC.Sharedfilehandle, 0xF001Fu, 0, 0, 0);
 }
 
+// Copy data from the shared buffer.
+void InitializeDRM(SteamDRM &DRM, char *Bufferpointer)
+{
+    // Copy the process ID.
+    DRM.ProcessID = *(uint32_t *)Bufferpointer;
+    Bufferpointer += sizeof(uint32_t);
+
+    // Copy the unknown ID.
+    DRM.Unknown = *(uint32_t *)Bufferpointer;
+    Bufferpointer += sizeof(uint32_t);
+
+    // Copy the startup module-name.
+    DRM.Startupmodule = Bufferpointer;
+    Bufferpointer += DRM.Startupmodule.length();
+
+    // Copy the startup event-name.
+    DRM.Startevent = Bufferpointer;
+    Bufferpointer += DRM.Startevent.length();
+
+    // Copy the termination event-name.
+    DRM.Termevent = Bufferpointer;
+    Bufferpointer += DRM.Termevent.length();
+}

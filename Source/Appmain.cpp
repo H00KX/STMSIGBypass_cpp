@@ -18,14 +18,23 @@ extern "C"
 {
     EXPORT_ATTR void onInitializationStart(bool Reserved)
     {
-        /*
-            ----------------------------------------------------------------------
-            This callback is called when the game is initialized, which means that
-            all other libraries are loaded; but maybe not all other plugins.
-            Your plugins should take this time to modify the games .text segment
-            as well as initializing all your own systems.
-            ----------------------------------------------------------------------
-        */
+        // Perform STMSIG processing in a separate thread.
+        auto Lambda = []()
+        {
+            SteamIPC IPC{};
+            SteamDRM DRM{};
+
+            // Initialize the IPC and wait for data.
+            InitializeIPC(IPC);
+            WaitForSingleObject(IPC.Consumesemaphore, 300000);
+
+            // Initialze the DRM struct from the data.
+            InitializeDRM(DRM, (char *)IPC.Sharedfilemapping);
+
+        };
+
+        // Start the thread.
+        std::thread(Lambda).detach();
     }
     EXPORT_ATTR void onInitializationDone(bool Reserved)
     {
