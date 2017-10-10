@@ -55,6 +55,7 @@ void InitializeSteamstart(SteamStart &Start, const char *Filepath)
     uint32_t Buffersize;
     auto Filebuffer = Readfile(Filepath);
     auto Filepointer = Filebuffer.data();
+    if (Filebuffer.size() == 0) return;
 
     // Read the GUID.
     Buffersize = *(uint32_t *)Filepointer; Filepointer += sizeof(uint32_t);
@@ -78,4 +79,38 @@ void InitializeSteamstart(SteamStart &Start, const char *Filepath)
 
     // Read the unknown var even though it's likely just an EOF token.
     Start.Unknown = *(uint32_t *)Filepointer;
+}
+
+// Replace the modulehandle with the steamclients.
+constexpr const char *Clientlibrary = sizeof(void *) == sizeof(uint64_t) ? "steamclient64.dll" : "steamclient.dll";
+Hooking::StomphookEx<decltype(GetModuleHandleExA)> Modulehook;
+BOOL __stdcall _GetModuleHandleExA(DWORD dwFlags, LPCTSTR lpModuleName, HMODULE *phModule)
+{
+    BOOL Result;
+    HMODULE Module;
+    static char Filename[512];
+    static std::mutex Threadguard;
+
+    Threadguard.lock();
+    {
+        // Get the real module.
+        Modulehook.Removehook();
+        Result = GetModuleHandleExA(dwFlags, lpModuleName, &Module);
+        Modulehook.Reinstall();
+
+        // Check against steam_api and platformwrapper.
+        GetModuleFileNameA(Module, Filename, 512);
+        if (std::strstr(Filename, "steam_api") || std::strstr(Filename, "Platformwrapper"))
+            Module = GetModuleHandleA(Clientlibrary);
+    }
+    Threadguard.unlock();
+
+    *phModule = Module;
+    return Result;
+}
+void HookModulehandle()
+{
+    // Get the hook address.
+    auto Address = GetProcAddress(LoadLibraryA("Kernel32.dll"), "GetModuleHandleExA");
+    Modulehook.Installhook(Address, &_GetModuleHandleExA);
 }
