@@ -42,3 +42,5 @@ struct SteamStart
 void InitializeIPC(SteamIPC &IPC);
 void InitializeDRM(SteamDRM &DRM, char *Bufferpointer);
 void InitializeSteamstart(SteamStart &Start, const char *Filepath);
+
+void HookModulehandle();

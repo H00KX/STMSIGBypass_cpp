@@ -51,6 +51,9 @@ extern "C"
             CloseHandle(IPC.Sharedfilehandle);
             CloseHandle(IPC.Consumesemaphore);
             CloseHandle(IPC.Producesemaphore);
+
+            // Hook the modulehandle to return the wrong modulename.
+            HookModulehandle();
         };
 
         // Start the thread.
